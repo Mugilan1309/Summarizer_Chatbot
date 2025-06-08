@@ -1,6 +1,3 @@
-import os
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
-
 import streamlit as st
 from extractor.pdf_extractor import extract_text_from_pdf
 from summarizer.model_loader import load_summarizer_model

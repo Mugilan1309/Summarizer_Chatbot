@@ -4,7 +4,7 @@ import numpy as np
 
 class Embedder:
     def __init__(self, model_name="sentence-transformers/all-mpnet-base-v2"):
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.device = "cpu"
         self.model = SentenceTransformer(model_name, device=self.device)
 
     def clean_input(self, texts):
