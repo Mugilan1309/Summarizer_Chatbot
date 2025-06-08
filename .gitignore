@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.pkl
+.env
+*.pdf
+.vscode/
+.idea/
+venv/
