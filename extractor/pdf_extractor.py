@@ -1,8 +1,11 @@
 import fitz  # PyMuPDF
+from io import BytesIO
 
-def extract_text_from_pdf(pdf_path):
-    """Extract full text from a PDF using PyMuPDF."""
-    doc = fitz.open(pdf_path)
+def extract_text_from_pdf(uploaded_file):
+    pdf_bytes = uploaded_file.read()
+    pdf_buffer = BytesIO(pdf_bytes)
+    doc = fitz.open(stream=pdf_buffer, filetype="pdf")
+
     full_text = ""
     for page_num in range(len(doc)):
         page = doc.load_page(page_num)
