@@ -7,3 +7,4 @@ PyMuPDF
 numpy
 sentencepiece
 tokenizers
+torch
