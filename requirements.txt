@@ -1,6 +1,0 @@
-streamlit
-transformers
-sentence-transformers
-scikit-learn
-faiss-cpu
-PyMuPDF
