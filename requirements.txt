@@ -4,3 +4,6 @@ sentence-transformers
 scikit-learn
 faiss-cpu
 PyMuPDF
+numpy
+sentencepiece
+tokenizers
