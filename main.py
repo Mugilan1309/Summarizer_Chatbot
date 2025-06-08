@@ -7,7 +7,7 @@ from chatbot.embedder import Embedder
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
-RELEVANCE_THRESHOLD = 0.15
+RELEVANCE_THRESHOLD = 0.30
 TOP_K_RELEVANT_CHUNKS = 5
 
 class RelevanceFilter:
