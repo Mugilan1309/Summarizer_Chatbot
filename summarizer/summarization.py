@@ -1,14 +1,13 @@
-import logging
 import re
-import fitz  # PyMuPDF
-
+import fitz  
+import logging
+from io import BytesIO
 from parser.heading_detector import detect_headings_from_lines, chunk_text_by_headings
 from parser.chunker import chunk_large_section
 from summarizer.utils import detect_image_only_pages, is_section_image_only
 
 
-def extract_lines_with_bold_info(pdf_path):
-    doc = fitz.open(pdf_path)
+def extract_lines_with_bold_info(doc):
     text_lines = []
 
     for page_num in range(len(doc)):
@@ -27,7 +26,6 @@ def extract_lines_with_bold_info(pdf_path):
                 if line_text:
                     text_lines.append((page_num, y0, line_text, is_bold))
 
-    # Sort by page and vertical position
     text_lines.sort(key=lambda x: (x[0], x[1]))
     return text_lines
 
@@ -83,23 +81,26 @@ def polish_summary(summary: str) -> str:
     return summary
 
 
-def summarize_document(text, summarizer, pdf_path):
+def summarize_document(text, summarizer, pdf_bytes):
     """
     Summarize a large text chunked by headings, skipping image-only or empty sections.
 
     Args:
         text (str): Full text of the document.
         summarizer (callable): Function that summarizes a string input.
-        pdf_path (str): Path to the PDF file (used to detect image-only pages).
+        pdf_bytes (bytes): Raw PDF bytes.
 
     Returns:
         str: Polished concatenated summary of all text sections.
     """
-    logging.basicConfig(level=logging.INFO)
-    doc = fitz.open(pdf_path)
-    image_only_pages = detect_image_only_pages(pdf_path)
 
-    text_lines = extract_lines_with_bold_info(pdf_path)
+    logging.basicConfig(level=logging.INFO)
+
+    pdf_stream = BytesIO(pdf_bytes)
+    doc = fitz.open(stream=pdf_stream, filetype="pdf")
+    image_only_pages = detect_image_only_pages(doc)
+
+    text_lines = extract_lines_with_bold_info(doc)
     headings = detect_headings_from_lines(text_lines)
     sections = chunk_text_by_headings(text, headings)
 

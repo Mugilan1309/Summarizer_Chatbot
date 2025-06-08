@@ -66,7 +66,7 @@ if uploaded_file:
     # Generate summary button
     if st.button("🔍 Generate Summary"):
         with st.spinner("Summarizing document..."):
-            summary = summarize_document(full_text, summarizer_model, uploaded_file.name)
+            summary = summarize_document(full_text, summarizer_model, uploaded_file.getvalue())
             st.session_state.summary = summary.replace("<n>", "\n")
 
     # Display stored summary if available
