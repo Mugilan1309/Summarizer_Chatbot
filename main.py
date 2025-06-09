@@ -1,24 +1,21 @@
 import streamlit as st
 
+# Set page config early
 st.set_page_config(page_title="📄 Summarizer + Chatbot", layout="wide")
-st.title("📄 Research Paper Summarizer + Document Chatbot")
-st.markdown("---")
-st.markdown(
-    "<small>⚠️ This is a prototype built with limited compute. Summaries and chatbot answers may be inaccurate or incomplete. Do not rely on this for academic, legal, or medical decisions.</small>",
-    unsafe_allow_html=True,
-)
 
+# Agreement logic
 if "agreed_to_terms" not in st.session_state:
     st.session_state.agreed_to_terms = False
 
 if not st.session_state.agreed_to_terms:
-    st.warning("⚠️ This is a prototype. Summaries and chatbot responses may be inaccurate. Do not rely on this information for real academic or legal decisions.")
-    agree = st.button("I Understand & Agree")
-    if agree:
+    st.title("📄 Research Paper Summarizer + Document Chatbot")
+    st.markdown("---")
+    st.warning("⚠️ This is a prototype. Summaries and chatbot responses may be inaccurate. Do not rely on this information for academic, legal, or medical decisions.")
+    
+    if st.button("I Understand & Agree"):
         st.session_state.agreed_to_terms = True
-        st.experimental_rerun()  # Forces UI to refresh
-    else:
-        st.stop()
+    
+    st.stop()
 
 
 from extractor.pdf_extractor import extract_text_from_pdf
