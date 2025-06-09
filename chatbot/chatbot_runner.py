@@ -2,7 +2,7 @@ from transformers import pipeline, set_seed, AutoTokenizer
 from chatbot.rag_pipeline import RAGPipeline
 
 class ChatbotRunner:
-    def __init__(self, embedder_model_name="sentence-transformers/all-MiniLM-L6-v2", llm_model_name="google/flan-t5-base"):
+    def __init__(self, embedder_model_name="sentence-transformers/all-MiniLM-L6-v2", llm_model_name="google/flan-t5-small"):
         self.rag = RAGPipeline(embedder_model_name=embedder_model_name)
         self.generator = pipeline("text2text-generation", model=llm_model_name)
         self.tokenizer = AutoTokenizer.from_pretrained(llm_model_name)

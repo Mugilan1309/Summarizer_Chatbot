@@ -1,6 +1,4 @@
-from transformers import pipeline, PegasusTokenizer, PegasusForConditionalGeneration
+from transformers import pipeline
 
 def load_summarizer_model():
-    tokenizer = PegasusTokenizer.from_pretrained("google/pegasus-cnn_dailymail", use_fast=False)
-    model = PegasusForConditionalGeneration.from_pretrained("google/pegasus-cnn_dailymail")
-    return pipeline("summarization", model=model, tokenizer=tokenizer, device=-1)
+    return pipeline("summarization", model="t5-small")
