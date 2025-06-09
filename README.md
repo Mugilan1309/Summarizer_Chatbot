@@ -1,4 +1,4 @@
-# 📄 Research Paper Summarizer + Document Chatbot
+# SmartScholar: Research Paper Summarizer + Document Chatbot
 
 A Streamlit-based prototype that allows users to upload research papers (PDFs), generate summaries, and ask questions about the document using a built-in chatbot.
 
