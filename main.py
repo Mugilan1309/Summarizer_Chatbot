@@ -10,7 +10,7 @@ if "agreed_to_terms" not in st.session_state:
 if not st.session_state.agreed_to_terms:
     st.title("📄 Research Paper Summarizer + Document Chatbot")
     st.markdown("---")
-    st.warning("⚠️ This is a prototype. Summaries and chatbot responses may be inaccurate. Do not rely on this information for academic, legal, or medical decisions.")
+    st.warning("⚠️ This is a prototype. Summaries and chatbot responses may be inaccurate. Do not rely on this information for academic, legal, or medical decisions. Click Twice")
     
     if st.button("I Understand & Agree"):
         st.session_state.agreed_to_terms = True
