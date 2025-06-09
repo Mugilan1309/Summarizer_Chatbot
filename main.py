@@ -56,6 +56,10 @@ def chunk_text_with_overlap(text, max_words=100, overlap=20):
     return chunks
 
 st.title("📄 Research Paper Summarizer + Document Chatbot")
+st.markdown(
+    "<h4 style='color:#b22222;'>⚠️ This is a prototype. Summaries and chatbot responses may be inaccurate. Do not rely on this information for academic, legal, or medical decisions.</h4>",
+    unsafe_allow_html=True
+)
 
 uploaded_file = st.file_uploader("Upload a PDF", type=["pdf"])
 
