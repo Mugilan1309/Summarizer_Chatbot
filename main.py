@@ -8,7 +8,7 @@ if "agreed_to_terms" not in st.session_state:
     st.session_state.agreed_to_terms = False
 
 if not st.session_state.agreed_to_terms:
-    st.title("📄 Research Paper Summarizer + Document Chatbot")
+    st.title("SmartScholar: Research Paper Summarizer + Document Chatbot")
     st.markdown("---")
     st.warning("⚠️ This is a prototype. Summaries and chatbot responses may be inaccurate. Do not rely on this information for academic, legal, or medical decisions. Click Twice")
     
@@ -55,7 +55,8 @@ def chunk_text_with_overlap(text, max_words=100, overlap=20):
         start += (max_words - overlap)
     return chunks
 
-st.title("📄 Research Paper Summarizer + Document Chatbot")
+st.title("SmartScholar")
+st.write("📄 Research Paper Summarizer + Document Chatbot")
 st.markdown(
     "<h4 style='color:#b22222;'>⚠️ This is a prototype. Summaries and chatbot responses may be inaccurate. Do not rely on this information for academic, legal, or medical decisions.</h4>",
     unsafe_allow_html=True
