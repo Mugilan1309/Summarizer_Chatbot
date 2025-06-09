@@ -1,5 +1,13 @@
 import streamlit as st
 
+st.set_page_config(page_title="📄 Summarizer + Chatbot", layout="wide")
+st.title("📄 Research Paper Summarizer + Document Chatbot")
+st.markdown("---")
+st.markdown(
+    "<small>⚠️ This is a prototype built with limited compute. Summaries and chatbot answers may be inaccurate or incomplete. Do not rely on this for academic, legal, or medical decisions.</small>",
+    unsafe_allow_html=True,
+)
+
 if "agreed_to_terms" not in st.session_state:
     st.session_state.agreed_to_terms = False
 
@@ -8,8 +16,10 @@ if not st.session_state.agreed_to_terms:
     agree = st.button("I Understand & Agree")
     if agree:
         st.session_state.agreed_to_terms = True
+        st.experimental_rerun()  # Forces UI to refresh
     else:
         st.stop()
+
 
 from extractor.pdf_extractor import extract_text_from_pdf
 from summarizer.model_loader import load_summarizer_model
@@ -48,15 +58,6 @@ def chunk_text_with_overlap(text, max_words=100, overlap=20):
         start += (max_words - overlap)
     return chunks
 
-# Streamlit UI
-st.set_page_config(page_title="📄 Summarizer + Chatbot", layout="wide")
-st.title("📄 Research Paper Summarizer + Document Chatbot")
-
-st.markdown("---")
-st.markdown(
-    "<small>⚠️ This is a prototype built with limited compute. Summaries and chatbot answers may be inaccurate or incomplete. Do not rely on this for academic, legal, or medical decisions.</small>",
-        unsafe_allow_html=True,
-)
 
 uploaded_file = st.file_uploader("Upload a PDF", type=["pdf"])
 
