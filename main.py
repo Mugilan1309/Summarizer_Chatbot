@@ -20,7 +20,6 @@ class RelevanceFilter:
     def get_relevant_chunks(self, query: str):
         query_embedding = self.embedder.embed_query(query)
         scores = cosine_similarity(query_embedding.reshape(1, -1), self.chunk_embeddings).flatten()
-
         relevant_indices = np.where(scores >= self.threshold)[0]
         sorted_indices = relevant_indices[np.argsort(scores[relevant_indices])[::-1]]
         top_indices = sorted_indices[:self.top_k]
@@ -39,7 +38,7 @@ def chunk_text_with_overlap(text, max_words=100, overlap=20):
 
 # Streamlit UI
 st.set_page_config(page_title="📄 Summarizer + Chatbot", layout="wide")
-st.title("📄 PDF Summarizer + Document Chatbot")
+st.title("📄 Research Paper Summarizer + Document Chatbot")
 
 uploaded_file = st.file_uploader("Upload a PDF", type=["pdf"])
 
@@ -57,19 +56,32 @@ if uploaded_file:
 
     st.success(f"✅ Extracted {len(full_text.split())} words from the document.")
 
-    # Initialize session state for summary and chat_history
+    # Initialize session state variables
     if "summary" not in st.session_state:
         st.session_state.summary = None
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
+    if "chunks" not in st.session_state:
+        with st.spinner("Chunking & indexing document..."):
+            chunks = chunk_text_with_overlap(full_text)
+            chunk_embeddings = embedder.embed_texts(chunks)
+            st.session_state.chunks = chunks
+            st.session_state.chunk_embeddings = chunk_embeddings
+            st.session_state.relevance_filter = RelevanceFilter(
+                embedder, chunk_embeddings, RELEVANCE_THRESHOLD, TOP_K_RELEVANT_CHUNKS
+            )
+            chatbot.index_document(chunks)
+        st.success("Chatbot ready!")
+    else:
+        chunks = st.session_state.chunks
+        relevance_filter = st.session_state.relevance_filter
 
-    # Generate summary button
+    # Summary generation
     if st.button("🔍 Generate Summary"):
         with st.spinner("Summarizing document..."):
             summary = summarize_document(full_text, summarizer_model, uploaded_file.getvalue())
             st.session_state.summary = summary.replace("<n>", "\n")
 
-    # Display stored summary if available
     if st.session_state.summary:
         st.subheader("📝 Summary")
         st.write(st.session_state.summary)
@@ -77,31 +89,25 @@ if uploaded_file:
     st.divider()
     st.subheader("💬 Ask Questions About the PDF")
 
-    with st.spinner("Chunking & indexing document..."):
-        chunks = chunk_text_with_overlap(full_text)
-        chatbot.index_document(chunks)
-        chunk_embeddings = embedder.embed_texts(chunks)
-        relevance_filter = RelevanceFilter(embedder, chunk_embeddings, RELEVANCE_THRESHOLD, TOP_K_RELEVANT_CHUNKS)
-    st.success("Chatbot ready!")
-
     query = st.text_input("Ask a question:")
     if query:
+        relevance_filter = st.session_state.relevance_filter
         top_indices, scores = relevance_filter.get_relevant_chunks(query)
         if len(top_indices) == 0:
             st.error("❌ Sorry, this question doesn't seem to relate to the document.")
         else:
             relevant_chunks = [chunks[i] for i in top_indices]
             chatbot_context = "\n".join(relevant_chunks)
+
             with st.spinner("Generating answer..."):
                 response = chatbot.generate_response(
                     query,
                     context_override=chatbot_context,
                     chat_history=st.session_state.chat_history
                 )
-            # Append current Q&A pair to chat history
+
             st.session_state.chat_history.append((query, response))
 
-            # Show full conversation history
             st.markdown("### Conversation so far:")
             for i, (q, a) in enumerate(st.session_state.chat_history):
                 st.markdown(f"**Q{i+1}:** {q}")
