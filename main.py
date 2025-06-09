@@ -55,6 +55,7 @@ def chunk_text_with_overlap(text, max_words=100, overlap=20):
         start += (max_words - overlap)
     return chunks
 
+st.title("📄 Research Paper Summarizer + Document Chatbot")
 
 uploaded_file = st.file_uploader("Upload a PDF", type=["pdf"])
 
